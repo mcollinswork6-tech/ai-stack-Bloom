@@ -4,10 +4,10 @@ from google.genai import types
 from pinecone import Pinecone
 from groq import Groq
 from tavily import TavilyClient # New!
+from dotenv import load_dotenv
+import os
 
-import dotenv
-
-dotenv.load_dotenv()
+load_dotenv()
 
 # --- Clients ---
 GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")

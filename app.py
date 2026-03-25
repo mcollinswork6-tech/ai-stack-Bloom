@@ -6,9 +6,10 @@ from groq import Groq
 from tavily import TavilyClient
 from docx import Document 
 from io import BytesIO
-import dotenv
+from dotenv import load_dotenv
+import os
 
-dotenv.load_dotenv()
+load_dotenv()
 
 # --- 1. SETUP & CLIENTS ---
 st.set_page_config(page_title="Bloom Health AI", page_icon="🌸", layout="centered")

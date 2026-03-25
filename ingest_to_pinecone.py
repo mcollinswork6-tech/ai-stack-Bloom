@@ -3,8 +3,8 @@ import time
 from google import genai
 from google.genai import types
 from pinecone import Pinecone
-
-import dotenv
+from dotenv import load_dotenv
+import os
 
 load_dotenv()
 
