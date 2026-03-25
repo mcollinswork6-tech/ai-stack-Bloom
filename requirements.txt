@@ -3,7 +3,7 @@ python-dotenv
 google-generativeai
 google-genai
 groq
-pinecone-client
+pinecone
 pandas
 PyPDF2
 python-docx
