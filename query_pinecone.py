@@ -27,8 +27,8 @@ def get_query_embedding(text):
     """Converts user question into a vector using a stable model ID."""
     try:
         result = gemini_client.models.embed_content(
-            # FIX: Use the string name directly, no 'models/' prefix
-            model="text-embedding-004", 
+            # FIX: Use 'gemini-embedding-001' to match ingestion
+            model="gemini-embedding-001", 
             contents=text,
             config=types.EmbedContentConfig(
                 task_type="RETRIEVAL_QUERY",

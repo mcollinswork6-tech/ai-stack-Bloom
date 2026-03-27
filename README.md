@@ -22,7 +22,7 @@ The core process follows an "Evidence-First" approach:
 - **Storage**: Chunks and their vectors are stored in a **Pinecone** index (`evidence-to-impact`) with source metadata.
 
 ### 🔍 Retrieval & Retrieval-Augmented Generation (`query_pinecone.py`)
-- **Query Embedding**: The user's question is embedded using **Google Gemini (text-embedding-004)**.
+- **Query Embedding**: The user's question is embedded using **Google Gemini (gemini-embedding-001)**.
 - **Vector Matching**: Pinecone's vector search identifies the most relevant evidence chunks.
 - **Fallback Mechanism**: When internal data is insufficient, **Tavily API** provides a secondary layer of real-time web-based evidence.
 
