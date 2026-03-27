@@ -5,13 +5,33 @@ Bloom Health AI is a specialized platform designed to provide validated maternal
 ## 🚀 The Bloom-ai-stack Process
 
 The core process follows an "Evidence-First" approach:
-1.  **User Inquiry**: A user submits a query through the Streamlit interface.
-2.  **Semantic Search**: The system converts the query into a high-dimensional vector and searches a curated internal database (Pinecone).
-3.  **Validation Check**: 
-    *   If a high-confidence match (>70%) is found, the system uses internal evidence.
-    *   If confidence is low, the system performs a real-time web search (Tavily) to gather current information.
-4.  **Expert Reasoning**: The retrieved context is passed to a Large Language Model (Groq Llama 3) with a "Maternal Health Expert" persona.
-5.  **Validated Response**: The AI generates a response including source citations and a validation tag indicating the evidence source.
+
+```mermaid
+graph TD
+    A[User Inquiry] --> B{Semantic Search}
+    B -->|Pinecone| C{Confidence > 0.7?}
+    C -->|Yes| D[Internal Evidence]
+    C -->|No| E[Real-Time Web Search]
+    D --> F[Groq / Llama 3 Reasoning]
+    E --> F
+    F --> G[Validated Response]
+    G --> H[Exportable Report]
+```
+
+### 🧠 `ask_bloom_ai` Detailed Logic
+1.  **User Inquiry**: User asks a question via the Streamlit chat input.
+2.  **RAG / Pinecone Semantic Search**: 
+    - The question is embedded using **Google Gemini**.
+    - **Pinecone** performs a vector search on the "evidence-to-impact" index to find the 3 most relevant context chunks.
+3.  **Validation & Fallback**:
+    - If the top match score is > 0.7, the system uses internal evidence from Texas state reports and guidelines.
+    - If confidence is low, the system falls back to **Tavily API** for real-time web verification.
+4.  **LLM Reasoning (Groq / Llama)**:
+    - The retrieved context and the original question are sent to **Groq**, powering the **Llama 3.3 70B** model.
+    - A specialized "Maternal Health Expert" persona is applied to ensure professional and accurate communication.
+5.  **Multi-LLM Elasticity**:
+    - The stack is designed for multi-provider support. While **Groq/Llama** provides high-speed reasoning, the system can be configured to use **OpenAI (GPT-4o)** for complex summaries or secondary verification.
+6.  **Validated Response**: The AI response is streamed to the user with specific validation tags and source citations.
 
 ## ⚙️ Data Processing Pipeline
 
@@ -37,7 +57,25 @@ The core process follows an "Evidence-First" approach:
 | **Web Research** | Real-time external data verification | [Tavily](https://tavily.com/) |
 | **Reporting** | Generating exportable `.docx` reports | [Python-docx](https://python-docx.readthedocs.io/) |
 
-## 🛠️ Setup & Local Development
+## 💰 Cost & API Economics
+
+The Bloom-ai-stack is optimized for developer cost-efficiency, utilizing generous free tiers for initial development and cost-effective pay-as-you-go pricing for production.
+
+### Estimated Pricing Table (as of 2024/2025)
+
+| Service | Provider | Model / Tier | Cost (Approx.) | Free Tier Limits |
+| :--- | :--- | :--- | :--- | :--- |
+| **Embeddings** | Google Gemini | `gemini-embedding-001` | $0.125 / 1M input chars | 1,500 requests / day |
+| **Reasoning** | Groq | `llama-3.3-70b` | ~$0.59 / 1M input tokens | 14,400 requests / day * |
+| **Vector DB** | Pinecone | Starter (Serverless) | Pay-as-you-go usage | 2GB Storage / 2M Writes |
+| **Web Search** | Tavily | Basic API | $0.05 / 100 searches | 1,000 searches / month |
+| **Advanced Reasoning** | OpenAI | `gpt-4o` | $2.50 / 1M input tokens | No free credits (standard) |
+
+*\* Groq free tier is subject to specific rate limits and usage quotas.*
+
+### 🛠️ Developer Economy
+- **Zero-Cost Start**: A fully functional version of this app can run within the free tiers of Google Gemini, Groq (Beta), Pinecone Starter, and Tavily.
+- **Scalability**: As the evidence base grows, Pinecone Serverless scales costs linearly based on storage and read/write units, rather than fixed server costs.
 
 1.  **Clone the Repository**:
     ```bash
