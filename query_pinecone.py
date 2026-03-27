@@ -23,15 +23,18 @@ pc = Pinecone(api_key=PINECONE_API_KEY)
 index = pc.Index("evidence-to-impact")
 
 def get_query_embedding(text):
-    """Converts user question into a 1536-dimension vector using Gemini."""
+    """Converts user question into a vector using the supported Gemini model."""
     result = gemini_client.models.embed_content(
-        model="models/embedding-001", # Updated to the latest stable embedding model
+        # CHANGE THIS: Use 'text-embedding-004' or 'text-embedding-005'
+        # or 'gemini-embedding-001' based on your project's availability.
+        model="text-embedding-004", 
         contents=text,
-        config=types.EmbedContentConfig(task_type="RETRIEVAL_QUERY", output_dimensionality=1536)
+        config=types.EmbedContentConfig(
+            task_type="RETRIEVAL_QUERY", 
+            output_dimensionality=1536  # Ensure this matches your Pinecone index
+        )
     )
-    # The new SDK returns a list of embeddings; grab the first one
     return result.embeddings[0].values
-
 def ask_ai(question):
     # 1. SEARCH PINECONE
     query_vector = get_query_embedding(question)
