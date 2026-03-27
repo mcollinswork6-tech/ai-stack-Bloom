@@ -21,9 +21,9 @@ TAVILY_API_KEY = os.getenv("TAVILY_API_KEY")
 @st.cache_resource
 def get_clients():
     return {
-        "gemini": genai.Client(api_key=os.getenv(GEMINI_API_KEY)),
-        "groq": Groq(api_key=os.getenv(GROQ_API_KEY)),
-        "tavily": TavilyClient(api_key=os.getenv(TAVILY_API_KEY))
+        "gemini": genai.Client(api_key=GEMINI_API_KEY),
+        "groq": Groq(api_key=GROQ_API_KEY),
+        "tavily": TavilyClient(api_key=TAVILY_API_KEY)
     }
 
 clients = get_clients()
@@ -59,7 +59,7 @@ def ask_bloom_ai(question):
             
             # Generate a quick 1-sentence gist of the source
             try:
-                summary_req = groq_client.chat.completions.create(
+                summary_req = clients["groq"].chat.completions.create(
                     model="llama-3.3-70b-versatile",
                     messages=[{"role": "user", "content": f"Summarize this in 10 words: {text_chunk[:400]}"}],
                     max_tokens=25
@@ -74,7 +74,7 @@ def ask_bloom_ai(question):
             })
     else:
         status_tag = "🌍 **Note: Retrieved via Real-Time Web Search.**"
-        web_results = tavily.search(query=question, search_depth="basic", max_results=2)
+        web_results = clients["tavily"].search(query=question, search_depth="basic", max_results=2)
         for res in web_results['results']:
             context_text += f"\n---\n{res['content'][:1500]}"
             detailed_sources.append({
@@ -85,7 +85,7 @@ def ask_bloom_ai(question):
     system_prompt = f"Maternal Health Expert. Start with: {status_tag}. Use context ONLY."
 
     try:
-        chat_completion = groq_client.chat.completions.create(
+        chat_completion = clients["groq"].chat.completions.create(
             model="llama-3.3-70b-versatile",
             messages=[
                 {"role": "system", "content": system_prompt},
