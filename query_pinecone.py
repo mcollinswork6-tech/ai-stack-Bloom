@@ -23,18 +23,23 @@ pc = Pinecone(api_key=PINECONE_API_KEY)
 index = pc.Index("evidence-to-impact")
 
 def get_query_embedding(text):
-    """Converts user question into a vector using the supported Gemini model."""
-    result = gemini_client.models.embed_content(
-        # CHANGE THIS: Use 'text-embedding-004' or 'text-embedding-005'
-        # or 'gemini-embedding-001' based on your project's availability.
-        model="text-embedding-004", 
-        contents=text,
-        config=types.EmbedContentConfig(
-            task_type="RETRIEVAL_QUERY", 
-            output_dimensionality=1536  # Ensure this matches your Pinecone index
+    """Converts user question into a vector using a stable model ID."""
+    try:
+        result = gemini_client.models.embed_content(
+            # FIX: Use the string name directly, no 'models/' prefix
+            model="text-embedding-004", 
+            contents=text,
+            config=types.EmbedContentConfig(
+                task_type="RETRIEVAL_QUERY",
+                # Ensure this matches your Pinecone index settings
+                output_dimensionality=1536 
+            )
         )
-    )
-    return result.embeddings[0].values
+        return result.embeddings[0].values
+    except Exception as e:
+        st.error(f"Embedding Error: {e}")
+        # Return a zero-vector or re-raise to prevent the 404 from crashing the app
+        raise e
 def ask_ai(question):
     # 1. SEARCH PINECONE
     query_vector = get_query_embedding(question)

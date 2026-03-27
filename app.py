@@ -187,7 +187,7 @@ if final_prompt:
                             st.divider()
                 
                 st.session_state.messages.append({"role": "assistant", "content": answer})
-                st.rerun()
+
                 
             except Exception as e:
                 st.error(f"Something went wrong: {e}")
