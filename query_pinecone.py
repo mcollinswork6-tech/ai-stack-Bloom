@@ -25,7 +25,7 @@ index = pc.Index("evidence-to-impact")
 def get_query_embedding(text):
     """Converts user question into a 1536-dimension vector using Gemini."""
     result = gemini_client.models.embed_content(
-        model="text-embedding-004", # Updated to the latest stable embedding model
+        model="models/embedding-001", # Updated to the latest stable embedding model
         contents=text,
         config=types.EmbedContentConfig(task_type="RETRIEVAL_QUERY", output_dimensionality=1536)
     )
