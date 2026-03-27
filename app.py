@@ -18,9 +18,15 @@ GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
 GROQ_API_KEY = os.getenv("GROQ_API_KEY")
 TAVILY_API_KEY = os.getenv("TAVILY_API_KEY")
 
-gemini_client = genai.Client(api_key=GEMINI_API_KEY)
-groq_client = Groq(api_key=GROQ_API_KEY)
-tavily = TavilyClient(api_key=TAVILY_API_KEY)
+@st.cache_resource
+def get_clients():
+    return {
+        "gemini": genai.Client(api_key=os.getenv(GEMINI_API_KEY)),
+        "groq": Groq(api_key=os.getenv(GROQ_API_KEY)),
+        "tavily": TavilyClient(api_key=os.getenv(TAVILY_API_KEY))
+    }
+
+clients = get_clients()
 
 # --- 2. HELPER FUNCTIONS ---
 
@@ -123,7 +129,6 @@ with st.sidebar:
     if st.button("🗑️ Clear Chat History", use_container_width=True):
         st.session_state.messages = []
         st.session_state.used_sources = set()
-        st.rerun()
     
     st.divider()
 

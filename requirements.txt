@@ -1,10 +1,8 @@
 streamlit
 python-dotenv
-google-generativeai
 google-genai
 groq
 pinecone
-pandas
 PyPDF2
 python-docx
 tavily-python
